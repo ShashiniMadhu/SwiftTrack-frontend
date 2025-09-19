@@ -5,6 +5,8 @@ import { CartContext } from '../contexts/CartContext';
 export default function CheckoutPage({ onNavigate }) {
   const { cart, clearCart } = useContext(CartContext);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderResponse, setOrderResponse] = useState(null); // store raw response
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -30,13 +32,57 @@ export default function CheckoutPage({ onNavigate }) {
     });
   };
 
-  const handlePlaceOrder = () => {
+  
+const handlePlaceOrder = async () => {
+  if (!formData.fullName || !formData.email || !formData.phone || !formData.address || !formData.city || !formData.zipCode) {
+    alert("Please fill in all fields");
+    return;
+  }
+
+  try {
+    // Optionally set loading state
+    // setLoading(true);
+
+    const response = await fetch("http://localhost:3000/order/process", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        zip: formData.zipCode
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Server error:", errorData);
+      throw new Error(errorData.error || "Failed to place order");
+    }
+
+    const data = await response.json();
+    console.log("Order response:", data);
+
+    // Save raw response to state
+    setOrderResponse(data);
     setOrderPlaced(true);
+
+    // Clear cart & redirect after success
     setTimeout(() => {
       clearCart();
-      onNavigate('orders');
-    }, 3000);
-  };
+      onNavigate("orders");
+    }, 10000);
+
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "Failed to submit order. Please try again.");
+  } finally {
+    // setLoading(false);
+  }
+};
+
 
   if (orderPlaced) {
     return (
@@ -47,7 +93,15 @@ export default function CheckoutPage({ onNavigate }) {
             <div className="absolute top-32 right-20 w-16 h-16 rounded-full" style={{ backgroundColor: '#7A316F' }}></div>
             <div className="absolute bottom-20 left-1/4 w-12 h-12 rounded-full" style={{ backgroundColor: '#461959' }}></div>
           </div>
-          
+
+          {orderPlaced && orderResponse && (
+            <div className="order-result">
+              <pre style={{ background: '#f0f0f0', padding: '10px', borderRadius: '5px', overflowX: 'auto' }}>
+                {JSON.stringify(orderResponse, null, 2)}
+              </pre>
+            </div>
+          )}
+
           <div className="relative max-w-4xl mx-auto px-4 py-24 text-center">
             <div className="w-32 h-32 mx-auto mb-8 rounded-full flex items-center justify-center animate-pulse" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }}>
               <CheckCircle size={64} className="text-green-500" />
@@ -456,7 +510,7 @@ export default function CheckoutPage({ onNavigate }) {
                 onMouseEnter={(e) => e.target.style.backgroundColor = '#7A316F'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = '#CD6688'}
               >
-                <Lock className="mr-3" size={20} />
+                <Lock className="mr-3" size={20} onClick={{handlePlaceOrder}} />
                 Complete Order - ${finalTotal.toFixed(2)}
               </button>
               
