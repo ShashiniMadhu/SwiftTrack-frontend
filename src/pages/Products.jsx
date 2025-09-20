@@ -58,8 +58,7 @@ export default function ProductsPage() {
                 <span className="block" style={{ color: '#7A316F' }}>Perfect Style</span>
               </h1>
               <p className="text-lg leading-relaxed mb-6" style={{ color: '#461959', opacity: 0.8 }}>
-                From premium footwear to trendy clothing and essential accessories. 
-                Find everything you need to express your unique style.
+                Style Delivered – Clothes, Shoes, Bags & Accessories, All in One Place!
               </p>
 
               {/* CTA Buttons */}

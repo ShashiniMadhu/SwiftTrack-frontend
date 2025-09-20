@@ -85,8 +85,7 @@ export default function AuthPage({ onLogin }) {
               Step Into Premium Style
             </h2>
             <p className="text-xl leading-relaxed" style={{ color: '#461959', opacity: 0.8 }}>
-              Discover the world's finest footwear collection. From premium sneakers to elegant formal shoes.
-            </p>
+              Style Delivered – Clothes, Shoes, Bags & Accessories, All in One Place!            </p>
           </div>
           
           {/* Features */}

@@ -60,7 +60,7 @@ export const productsData = [
     subcategory: "Formal",
     price: 149.99,
     originalPrice: 179.99,
-    image: "https://images.unsplash.com/photo-1614252235316-8c857d38887b?w=400&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
     stock: 10,
     rating: 4.6,
     sale: true,
